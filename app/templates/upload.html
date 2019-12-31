@@ -1,0 +1,31 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "bootstrap/base.html" %}
+
+{% block navbar %}
+	{{ nav.top.render() }}
+	{{ utils.flashed_messages() }}
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		{% if file_id is defined %}
+		<p>
+			The newly uploaded file can now be downloaded from <a href="/{{ file_id }}">here</a>.
+		</p>
+		<hr>
+		{% endif %}
+
+		<h2>Upload new file</h2>
+
+		<div class="form-group">
+		<form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+			<table>
+				<tr>
+					<td><input type="file" class="form-control-file" name="file"/></td>
+					<td><button type="submit" class="btn btn-primary">Submit</button></td>
+				</tr>
+			</table>
+		</form>
+		</div>
+	</div>
+{% endblock %}

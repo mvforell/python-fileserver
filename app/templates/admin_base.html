@@ -1,0 +1,16 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "bootstrap/base.html" %}
+
+{% block navbar %}
+	{{ nav.top.render() }}
+	{{ utils.flashed_messages() }}
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<h2>Admin Overview</h2>
+		<p>
+			View and manage available files or upload new ones.
+		</p>
+	</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "bootstrap/base.html" %}
+
+{% block navbar %}
+	{{ nav.top.render() }}
+	{{ utils.flashed_messages() }}
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<h3>Available files</h3>
+
+		{% if file_list|length > 0 %}
+		<table class="table"> 
+			<tr>
+				<th>Filename</th>
+				<th>Uploaded</th>
+				<th>Size</th>
+				<th>Options</th>
+			</tr>
+			{% for file in file_list %}
+			<tr>
+				<td><a href="/{{ file[0] }}">{{ file[1] }}</a></td>
+				<td>{{ file[2] }}</td>
+				{% if file[3] > 1024 * 1024 %}
+				<td>{{ file[3] // (1024 * 1024) }}MB</td>
+				{% else %}
+				<td>{{ file[3] // 1024 }}kB</td>
+				{% endif %}
+				<td><button type="button" onclick="confirmDelete('{{ file[0] }}')">Delete</button></td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<p>
+			There are currently no files available.
+		</p>
+		{% endif %}
+	</div>
+
+	<script type="text/javascript">
+		function confirmDelete(file_id) {
+			if (confirm("Really delete file?")) {
+				window.location.href = "/admin/delete/" + file_id;
+			}
+		}
+	</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+[uwsgi]
+uid = http
+gid = http
+socket = 127.0.0.1:3031
+chdir = 
+wsgi-file = file-server.py
+callable = app
+master = true
+processes = 1
+threads = 1
+enable-threads = true
+virtualenv = 
+plugin=python3
+logto2 = log-uwsgi.log
