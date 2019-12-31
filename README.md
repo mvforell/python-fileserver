@@ -15,6 +15,11 @@ This fileserver requires `python >= 3.6` and `uwsgi` with the `python3` plugin.
 
 To install it, clone this repository to the directory you want the server to run from. Then create a virtual environment, e.g. with `python3 -m venv venv`, activate it with `source venv/bin/activate` and run `pip install -r requirements.txt`.
 
+The `sqlite3` databases use the following schemes:
+* `users.db`: `CREATE TABLE users (username text, password_hash text)`
+* `files.db`: `CREATE TABLE files (id text, filename text, uploaded datetime, size integer)`
+* `logs.db`: `CREATE TABLE logs (timestamp INTEGER, user TEXT, action TEXT, info TEXT)`
+
 ## Configuration
 To configure the fileserver itself, edit `app/config.py.example` and save it to `app/config.py` (for information on the `SECRET_KEY` option, see part III of the Flask Mega-Tutorial linked below). To change `uwsgi` deployment settings, edit `uwsgi.ini.example` and save it to `uwsgi.ini`.
 
@@ -67,5 +72,5 @@ For user management (adding/deleting users) and manually (using the console of y
 
 ## Additional notes
 * The server uses `werkzeug`'s `generate_password_hash()` and `check_password_hash()` functions for storing and checking passwords. For further information see the `werkzeug` [documentation]( https://werkzeug.palletsprojects.com).
-* Please don't ask why I created a new sqlite3 database file for every new table, I don't know why I did that and now I'm too lazy to merge them.
+* Please don't ask why I created a new `sqlite3` database file for every new table, I don't know why I did that and now I'm too lazy to merge them.
 * This project largely benefitted from Miguel Grinberg's [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world), which I can only recommend to anyone wanting to get into web development using `flask`.
