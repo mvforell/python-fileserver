@@ -130,3 +130,13 @@ dmypy.json
 
 # config file
 app/config.py
+
+# log files
+log-uwsgi.log
+access_log.txt
+
+# stored files
+files/*
+
+# databases
+app/database/*
