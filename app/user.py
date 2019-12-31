@@ -11,15 +11,16 @@ class User(UserMixin):
 
     @staticmethod
     def load(username):
-        print('---DEBUG--- path to database:', os.path.join(app.config['DB_DIRECTORY'], 'users.db'))
         conn   = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'users.db'))
         cursor = conn.cursor()
         user   = cursor.execute('SELECT * FROM users WHERE username=?',
                 (username,)).fetchone()
         
         if user is None:
+            conn.close()
             raise NameError(f"User '{username}' not found.")
 
+        conn.close()
         return User(user[0], user[1])
 
     def authenticate(self, password):
