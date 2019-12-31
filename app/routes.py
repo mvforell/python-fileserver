@@ -24,7 +24,7 @@ def not_found(error):
 def index():
     return redirect(url_for('admin'))
 
-@app.route('/by-name/<filename>')
+@app.route('/by-name/<path:filename>')
 def files_by_name(filename):
     file_id = id_from_filename(filename)
     return redirect(f'/{quote(file_id, safe="")}', 303)  # escape file_id
