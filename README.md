@@ -18,7 +18,7 @@ To install it, clone this repository to the directory you want the server to run
 The `sqlite3` databases use the following schemes:
 * `users.db`: `CREATE TABLE users (username text, password_hash text)`
 * `files.db`: `CREATE TABLE files (id text, filename text, uploaded datetime, size integer)`
-* `logs.db`: `CREATE TABLE logs (timestamp INTEGER, user TEXT, action TEXT, info TEXT)`
+* `logs.db`: `CREATE TABLE logs (timestamp INTEGER, user TEXT, ip_address TEXT, action TEXT, info TEXT)`
 
 ## Configuration
 To configure the fileserver itself, edit `app/config.py.example` and save it to `app/config.py` (for information on the `SECRET_KEY` option, see part III of the Flask Mega-Tutorial linked below). To change `uwsgi` deployment settings, edit `uwsgi.ini.example` and save it to `uwsgi.ini`.
@@ -69,6 +69,31 @@ This server is meant to be served at the root of a (sub)domain. It is possible t
 
 ## User management and manual upload/deletion of files
 For user management (adding/deleting users) and manually (using the console of your server) uploading or deleting files please use the provided scripts. (Note: they need to be run from the installed virtualenv, because they use the configuration from the `app` package which in turn imports `flask` etc.)
+
+## Privacy notes
+This server keeps logs in a database. These logs include the username (if logged in), the client IP address, the performed action (login/logout/upload/download/delete) and additional information like the file id or file name. For privacy reasons these logs should be anonymized (redact username and IP addresses) regularly (e.g. anonymize logs older than 30 days every day). `anonymize_logs.sh` does exactly that (the required age for anonymization can easily be changed in the script) using `anonymize_logs_older_than(days=30)` in `app/logging.py`. I recommend setting up a `systemd` service and timer unit to call that script daily. The `.service` and `.timer` files respectively could look like this:
+```
+[Unit]
+Description=Anonymize the logs of the python fileserver
+
+[Service]
+Type=oneshot
+ExecStart=.../anonymize_logs.sh
+User=http
+Group=http
+WorkingDirectory=...
+```
+```
+[Unit]
+Description=Anonymize the fileserver logs daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
 
 ## Additional notes
 * The server uses `werkzeug`'s `generate_password_hash()` and `check_password_hash()` functions for storing and checking passwords. For further information see the `werkzeug` [documentation]( https://werkzeug.palletsprojects.com).

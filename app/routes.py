@@ -39,7 +39,7 @@ def files(file_id):
 
     if filename is not None:
         username = current_user.get_id() if current_user.is_authenticated else 'not_authenticated'
-        log(username, 'download', f'ip: {request.remote_addr}, file_id: {file_id}, ' +
+        log(username, request.remote_addr, 'download', f'file_id: {file_id}, ' +
                 f'filename: {filename[0]}')
         return send_from_directory(app.config['FILES_DIRECTORY'], filename[0],
                 as_attachment=True)
@@ -66,7 +66,7 @@ def login():
 
             login_user(user)
             flash('Successfully logged in.', 'success')
-            log(user.get_id(), 'login', f'ip: {request.remote_addr}')
+            log(user.get_id(), request.remote_addr, 'login', '')
 
             next_addr = request.args.get('next')
             if not is_safe_url(next_addr, {request.host,}):
@@ -81,7 +81,7 @@ def login():
 @app.route('/admin/logout')
 @login_required
 def logout():
-    log(current_user.get_id(), 'logout', f'ip: {request.remote_addr}')
+    log(current_user.get_id(), request.remote_addr, 'logout', '')
     logout_user()
     flash('Successfully logged out.', 'success')
     return redirect(url_for('admin'))
@@ -133,7 +133,7 @@ def upload():
             conn.close()
             
             flash('Successfully uploaded file.', 'success')
-            log(current_user.get_id(), 'upload', f'ip: {request.remote_addr}, file_id: {file_id}, ' +
+            log(current_user.get_id(), request.remote_addr, 'upload', f'file_id: {file_id}, ' +
                     f'filename: {filename}')
         else:
             flash('Invalid upload.', 'danger')
@@ -159,7 +159,7 @@ def delete(file_id):
         conn.commit()
         os.remove(os.path.join(app.config['FILES_DIRECTORY'], res[0]))
         flash('Successfully deleted file.', 'success')
-        log(current_user.get_id(), 'delete', f'ip: {request.remote_addr}, file_id: {file_id}, ' +
+        log(current_user.get_id(), request.remote_addr, 'delete', f'file_id: {file_id}, ' +
                     f'filename: {res[0]}')
     else:
         flash('Invalid id.', 'danger')
