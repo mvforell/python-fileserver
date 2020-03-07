@@ -1,4 +1,5 @@
-import os
+#!/usr/bin/env python3
+
 import sqlite3
 
 from sys import argv, exit
@@ -10,7 +11,7 @@ if __name__ == '__main__':
         print(f'Usage: {argv[0]} <username>')
         exit(1)
     
-    conn   = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'users.db'))
+    conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
     cursor.execute('SELECT username FROM users WHERE username=?', (argv[1],))
     

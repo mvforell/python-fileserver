@@ -4,16 +4,17 @@ from flask_nav.elements import Navbar, View
 from app import nav
 
 Navigation_logged_in = Navbar('',
-        View('Upload', 'upload'),
-        View('Files', 'list_files'),
-        View('Logout', 'logout')
-)
+                              View('Upload', 'upload'),
+                              View('Files', 'list_files'),
+                              View('Logout', 'logout')
+                              )
 
-Navigation_logged_out= Navbar('',
-        View('Upload', 'upload'),
-        View('Files', 'list_files'),
-        View('Sign In', 'login')
-)
+Navigation_logged_out = Navbar('',
+                               View('Upload', 'upload'),
+                               View('Files', 'list_files'),
+                               View('Sign In', 'login')
+                               )
+
 
 @nav.navigation(id='top')
 def top():

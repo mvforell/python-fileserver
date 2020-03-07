@@ -16,7 +16,7 @@ if __name__ == '__main__':
     else:
         file_id = id_from_filename(sys.argv[1])
 
-        conn = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'files.db'))
+        conn = sqlite3.connect(app.config['DB_FILE'])
         cursor = conn.cursor()
         cursor.execute('SELECT filename FROM files WHERE id=?', (file_id,))
 

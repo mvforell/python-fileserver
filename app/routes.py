@@ -1,11 +1,9 @@
-import base64
-import hashlib
 import os
 import sqlite3
 
 from datetime import datetime
 from flask import flash, url_for, redirect, render_template, request, send_from_directory
-from flask_login import LoginManager, current_user, login_user, login_required, logout_user
+from flask_login import current_user, login_user, login_required, logout_user
 from is_safe_url import is_safe_url
 from urllib.parse import quote
 from werkzeug.utils import secure_filename
@@ -16,22 +14,26 @@ from app.hashing import id_from_filename
 from app.user import User
 from app.logging import log
 
+
 @app.errorhandler(404)
 def not_found(error):
     return 'Invalid file id.', error.code
 
+
 @app.route('/')
 def index():
     return redirect(url_for('admin'))
+
 
 @app.route('/by-name/<path:filename>')
 def files_by_name(filename):
     file_id = id_from_filename(filename)
     return redirect(f'/{quote(file_id, safe="")}', 303)  # escape file_id
 
+
 @app.route('/<path:file_id>')
 def files(file_id):
-    conn = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'files.db'))
+    conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
     cursor.execute('SELECT filename FROM files WHERE id=?', (file_id,))
     filename = cursor.fetchone()
@@ -40,15 +42,17 @@ def files(file_id):
     if filename is not None:
         username = current_user.get_id() if current_user.is_authenticated else 'not_authenticated'
         log(username, request.remote_addr, 'download', f'file_id: {file_id}, ' +
-                f'filename: {filename[0]}')
+            f'filename: {filename[0]}')
         return send_from_directory(app.config['FILES_DIRECTORY'], filename[0],
-                as_attachment=True)
+                                   as_attachment=True)
 
     return 'Invalid file id.', 404
+
 
 @app.route('/admin/')
 def admin():
     return render_template('admin_base.html', title="Admin Overview")
+
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def login():
@@ -69,7 +73,7 @@ def login():
             log(user.get_id(), request.remote_addr, 'login', '')
 
             next_addr = request.args.get('next')
-            if not is_safe_url(next_addr, {request.host,}):
+            if not is_safe_url(next_addr, {request.host, }):
                 return redirect(url_for('admin'))
 
             return redirect(next_addr or url_for('admin'))
@@ -77,6 +81,7 @@ def login():
             flash('Invalid username or password.', 'danger')
             return redirect(url_for('login'))
     return render_template('login.html', title='Sign in', form=form)
+
 
 @app.route('/admin/logout')
 @login_required
@@ -86,18 +91,21 @@ def logout():
     flash('Successfully logged out.', 'success')
     return redirect(url_for('admin'))
 
+
 @app.route('/admin/list')
 @login_required
 def list_files():
-    conn = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'files.db'))
+    conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
-    files = cursor.execute('SELECT * FROM files').fetchall()
-    return render_template('list.html', title='List available files', file_list=files)
+    file_list = cursor.execute('SELECT * FROM files').fetchall()
+    return render_template('list.html', title='List available files', file_list=file_list)
+
 
 def allowed_file(filename):
     if '.' in filename:
         return filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
     return True
+
 
 @app.route('/admin/upload', methods=['GET', 'POST'])
 @login_required
@@ -110,7 +118,7 @@ def upload():
             return redirect(url_for('upload'))
 
         f = request.files['file']
-        if (f.filename == ''):
+        if f.filename == '':
             flash('Invalid upload.', 'danger')
             return redirect(url_for('upload'))
 
@@ -121,20 +129,20 @@ def upload():
                 return redirect(url_for('upload'))
 
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
+
             file_id = id_from_filename(filename)
             time_uploaded = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             size = os.stat(os.path.join(app.config['UPLOAD_FOLDER'], filename)).st_size
 
-            conn = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'files.db'))
+            conn = sqlite3.connect(app.config['DB_FILE'])
             cursor = conn.cursor()
             cursor.execute('INSERT INTO files VALUES (?, ?, ?, ?)', (file_id, filename, time_uploaded, size))
             conn.commit()
             conn.close()
-            
+
             flash('Successfully uploaded file.', 'success')
             log(current_user.get_id(), request.remote_addr, 'upload', f'file_id: {file_id}, ' +
-                    f'filename: {filename}')
+                f'filename: {filename}')
         else:
             flash('Invalid upload.', 'danger')
 
@@ -146,10 +154,11 @@ def upload():
     else:
         return render_template('upload.html', title='Upload file')
 
+
 @app.route('/admin/delete/<path:file_id>')  # the path annotation is to match escaped slashes
 @login_required
 def delete(file_id):
-    conn = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'files.db'))
+    conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
     cursor.execute('SELECT filename FROM files WHERE id=?', (file_id,))
 
@@ -160,13 +169,14 @@ def delete(file_id):
         os.remove(os.path.join(app.config['FILES_DIRECTORY'], res[0]))
         flash('Successfully deleted file.', 'success')
         log(current_user.get_id(), request.remote_addr, 'delete', f'file_id: {file_id}, ' +
-                    f'filename: {res[0]}')
+            f'filename: {res[0]}')
     else:
         flash('Invalid id.', 'danger')
 
     conn.close()
 
     return redirect(url_for('list_files'))
+
 
 @login_manager.user_loader
 def load_user(username):

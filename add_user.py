@@ -1,4 +1,5 @@
-import os
+#!/usr/bin/env python3
+
 import sqlite3
 
 from getpass import getpass
@@ -16,7 +17,7 @@ if __name__ == '__main__':
         exit(1)
 
     password_hash = generate_password_hash(password)
-    conn   = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'users.db'))
+    conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
     cursor.execute('INSERT INTO users VALUES (?, ?)', (username, password_hash))
     conn.commit()

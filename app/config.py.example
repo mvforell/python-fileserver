@@ -1,6 +1,6 @@
 class Config(object):
     SECRET_KEY         = ''
-    DB_DIRECTORY       = ''
+    DB_FILE            = ''
     FILES_DIRECTORY    = ''
     UPLOAD_FOLDER      = FILES_DIRECTORY
     ALLOWED_EXTENSIONS = ['mp3', 'zip', 'pdf', 'jar', 'doc', 'docx', 'txt', 'py', 'c', 'cpp', 'h', 'exe', 'xls', 'xlsx', 'tex', 'png', 'jpg', 'jpeg']

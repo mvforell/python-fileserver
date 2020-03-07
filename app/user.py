@@ -1,8 +1,8 @@
-import os
 import sqlite3
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash
 from app import app
+
 
 class User(UserMixin):
     def __init__(self, username, password_hash):
@@ -11,7 +11,7 @@ class User(UserMixin):
 
     @staticmethod
     def load(username):
-        conn   = sqlite3.connect(os.path.join(app.config['DB_DIRECTORY'], 'users.db'))
+        conn = sqlite3.connect(app.config['DB_FILE'])
         cursor = conn.cursor()
         user   = cursor.execute('SELECT * FROM users WHERE username=?',
                 (username,)).fetchone()
