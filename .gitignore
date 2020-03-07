@@ -141,3 +141,6 @@ files/*
 
 # databases
 app/database/*
+
+# PyCharm IDE
+.idea/

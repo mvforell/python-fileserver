@@ -61,7 +61,7 @@ server {
         ...
 }
 ```
-Make sure that the port for the `uwsgi_pass` section in your `nginx` config mathes the one specified in `uwsgi.ini`.
+Make sure that the port for the `uwsgi_pass` section in your `nginx` config matches the one specified in `uwsgi.ini`.
 
 To change the algorithm used for computing the `file_id` from a given file name, edit `id_from_filename()` in `app/hashing.py`.
 
