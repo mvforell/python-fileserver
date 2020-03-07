@@ -8,6 +8,7 @@ from datetime import datetime
 
 from app import app
 from app.hashing import id_from_filename
+from app.logging import log
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -44,5 +45,7 @@ if __name__ == '__main__':
         cursor.execute('INSERT INTO files VALUES(?, ?, ?, ?)', (file_id, sys.argv[1], time_uploaded, size))
         conn.commit()
         conn.close()
+
+        log('terminal', 'terminal', 'upload', f'file_id: {file_id}, filename: {sys.argv[1]}')
 
         print(f'Added file {sys.argv[1]} to database. File ID: {file_id}')
