@@ -63,6 +63,6 @@ def anonymize_logs_older_than(days=30):
     conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
     cursor.execute("UPDATE logs SET user = 'anonymized', ip_address = 'anonymized' " +
-                   "WHERE timestamp < ? AND user != 'anonymized'", (ts_n_days_ago,))
+                   "WHERE (timestamp < ?) AND NOT (user IN ('anonymized', 'terminal'))", (ts_n_days_ago,))
     conn.commit()
     conn.close()
