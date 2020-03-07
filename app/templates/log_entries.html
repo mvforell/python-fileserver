@@ -1,0 +1,54 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block navbar %}
+	{{ nav.top.render() }}
+	{{ utils.flashed_messages() }}
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<h3>Log entries</h3>
+
+		{% if log_entries|length > 0 %}
+            <table class="table">
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>IP address</th>
+                    <th>Performed action</th>
+                    <th>Additional info</th>
+                </tr>
+                {% for entry in log_entries %}
+                <tr>
+                    <td>{{ entry[0] }}</td>
+                    <td>{{ entry[1] }}</td>
+                    <td>{{ entry[2] }}</td>
+                    <td>{{ entry[3] }}</td>
+                    {% if entry[4]|length == 0 %}
+                        <td>-</td>
+                    {% else %}
+                        <td>{{ entry[4] }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
+            <button type="button" onclick="confirmClear()">Clear log</button>
+		{% else %}
+            <p>
+                There are no log entries available.
+            </p>
+		{% endif %}
+	</div>
+
+    <script type="text/javascript">
+		function confirmClear() {
+            if (confirm("Really clear log?")) {
+                let r = new XMLHttpRequest();
+                r.open('POST', '{{ url_for('clear_log') }}', false);
+                r.send(null);
+                window.location.reload();
+            }
+		}
+	</script>
+{% endblock %}

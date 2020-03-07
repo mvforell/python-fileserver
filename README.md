@@ -11,7 +11,7 @@ Usage is as follows:
 * to upload new files or manage (list/delete) already available files, use the admin section.
 
 ## Dependencies and installation
-This fileserver requires `python >= 3.6` and `uwsgi` with the `python3` plugin.
+This fileserver requires `python >= 3.6` and `uwsgi` with the `python3` plugin. (__Note:__ depending on your OS the plugin might be named `python` instead; if this is the case you also need to change the relevant section in your `uwsgi.ini`.)
 
 To install it, clone this repository to the directory you want the server to run from. Then create a virtual environment, e.g. with `python3 -m venv venv`, activate it with `source venv/bin/activate` and run `pip install -r requirements.txt`.
 
@@ -42,7 +42,7 @@ KillSignal=SIGQUIT
 [Install]
 WantedBy=multi-user.target
 ```
-and the relevant section in your nginx config like this:
+And the relevant section in your nginx config like this:
 ```
 server {
         server_name ...;

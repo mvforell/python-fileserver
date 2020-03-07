@@ -12,7 +12,7 @@ from app import app, login_manager
 from app.forms import LoginForm
 from app.hashing import id_from_filename
 from app.user import User
-from app.logging import log
+from app.logging import clear_log_entries, get_last_logs, log
 
 
 @app.errorhandler(404)
@@ -105,6 +105,19 @@ def allowed_file(filename):
     if '.' in filename:
         return filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
     return True
+
+
+@app.route('/admin/log_entries')
+@login_required
+def show_log_entries():
+    log_entries = list(get_last_logs(count=50, timestamps=False))
+    return render_template('log_entries.html', title='Show log entries', log_entries=log_entries)
+
+
+@app.route('/admin/clear_log', methods=['POST'])
+@login_required
+def clear_log():
+    clear_log_entries()
 
 
 @app.route('/admin/upload', methods=['GET', 'POST'])

@@ -6,6 +6,7 @@ from app import nav
 Navigation_logged_in = Navbar('',
                               View('Upload', 'upload'),
                               View('Files', 'list_files'),
+                              View('Log entries', 'show_log_entries'),
                               View('Logout', 'logout')
                               )
 

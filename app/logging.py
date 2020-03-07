@@ -22,7 +22,7 @@ def create_table():
     conn.close()
 
 
-def clear_logs():
+def clear_log_entries():
     conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
     cursor.execute('DELETE FROM logs')
@@ -44,7 +44,9 @@ def log(user, ip_address, action, info):
 def get_last_logs(count=1000, timestamps=False):
     conn = sqlite3.connect(app.config['DB_FILE'])
     cursor = conn.cursor()
-    results = cursor.execute('SELECT timestamp, user, ip_address, action, info FROM logs').fetchmany(count)
+    results = cursor.execute(
+        'SELECT timestamp, user, ip_address, action, info FROM logs ORDER BY timestamp DESC'
+    ).fetchmany(count)
     conn.close()
 
     for res in results:
