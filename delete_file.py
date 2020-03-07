@@ -6,6 +6,7 @@ import sys
 
 from app import app
 from app.hashing import id_from_filename
+from app.logging import log
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -35,6 +36,8 @@ if __name__ == '__main__':
         conn.commit()
         conn.close()
 
-        os.remove(os.path.join('files', sys.argv[1]))
+        os.remove(os.path.join(app.config['FILES_DIRECTORY'], sys.argv[1]))
+
+        log('terminal', 'terminal', 'delete', f'file_id: {file_id}, filename: {sys.argv[1]}')
 
         print(f'Deleted file {sys.argv[1]} with file ID {file_id} from the database.')
