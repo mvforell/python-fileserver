@@ -54,7 +54,7 @@ def get_last_logs(count=1000, timestamps=False):
         if timestamps:
             timestamp /= 1000
         else:
-            timestamp = get_datetime_from_timestamp(timestamp).strftime('%Y-%d-%m %H:%M:%S')
+            timestamp = get_datetime_from_timestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
         yield [timestamp] + rest
 
 
