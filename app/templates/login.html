@@ -1,14 +1,9 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/utils.html" as utils %}
-
-{% block navbar %}
-	{{ nav.top.render() }}
-	{{ utils.flashed_messages() }}
-{% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
 	<div class="container">
-		<h2>Sign In</h2>
+		<h3>Sign In</h3>
+
 		<form action="" method="post" novalidate>
 			{{ form.hidden_tag() }}
 			<p>
@@ -28,4 +23,6 @@
 			<p>{{ form.submit() }}</p>
 		</form>
 	</div>
+
+    {{ super() }}
 {% endblock %}

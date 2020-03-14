@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
-from flask_nav import Nav
+from flask_nav import Nav, register_renderer
 
 from app.config import Config
 
@@ -16,3 +16,5 @@ login_manager.login_view = 'login'
 
 from app import navigation
 from app import routes
+
+register_renderer(app, 'bootstrap', navigation.BootstrapRenderer)

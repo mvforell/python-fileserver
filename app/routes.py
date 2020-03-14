@@ -51,7 +51,7 @@ def files(file_id):
 
 @app.route('/admin/')
 def admin():
-    return render_template('admin_base.html', title="Admin Overview")
+    return render_template('index.html', title="Admin Overview")
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
