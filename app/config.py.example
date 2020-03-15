@@ -3,3 +3,5 @@ class Config(object):
     DB_FILE            = ''
     FILES_DIRECTORY    = ''
     ALLOWED_EXTENSIONS = ['mp3', 'zip', 'pdf', 'jar', 'doc', 'docx', 'txt', 'py', 'c', 'cpp', 'h', 'exe', 'xls', 'xlsx', 'tex', 'png', 'jpg', 'jpeg']
+    SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
