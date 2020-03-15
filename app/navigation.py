@@ -66,12 +66,16 @@ class BootstrapRenderer(Renderer):
     def visit_Navbar(self, node):
         cont = tags.nav(_class='navbar sticky-top navbar-expand-sm navbar-dark bg-secondary')
 
-        btn_toggle_kwargs = {
-            'class': 'navbar-toggler', 'type': 'button', 'data-toggle': 'collapse', 'data-target': '#navbarCollapseDiv',
-            'aria-controls': 'navbarCollapseDiv', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation'
-        }
-        btn_toggle = cont.add(tags.button(**btn_toggle_kwargs))
-        btn_toggle.add(tags.span(_class='navbar-toggler-icon'))
+        if current_user.is_authenticated:  # navbar is empty if not logged in, therefore no toggle button needed
+            btn_toggle_kwargs = {
+                'class': 'navbar-toggler', 'type': 'button', 'data-toggle': 'collapse',
+                'data-target': '#navbarCollapseDiv', 'aria-controls': 'navbarCollapseDiv', 'aria-expanded': 'false',
+                'aria-label': 'Toggle navigation'
+            }
+            btn_toggle = cont.add(tags.button(**btn_toggle_kwargs))
+            btn_toggle.add(tags.span(_class='navbar-toggler-icon'))
+        else:
+            cont['class'] += ' display-flex justify-content-end'  # so that the sign in button is always on the right
 
         div_coll = cont.add(tags.div(_class='collapse navbar-collapse', id='navbarCollapseDiv'))
         div_nav  = div_coll.add(tags.div(_class='navbar-nav'))
