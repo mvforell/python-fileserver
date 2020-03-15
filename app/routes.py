@@ -127,25 +127,25 @@ def upload():
         file_id = None
 
         if 'file' not in request.files:
-            flash('Invalid upload.', 'danger')
+            flash('Invalid upload: no file uploaded.', 'danger')
             return redirect(url_for('upload'))
 
         f = request.files['file']
         if f.filename == '':
-            flash('Invalid upload.', 'danger')
+            flash('Invalid upload: empty filename.', 'danger')
             return redirect(url_for('upload'))
 
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
-            if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
-                flash('Invalid upload.', 'danger')
+            if os.path.isfile(os.path.join(app.config['FILES_DIRECTORY'], filename)):
+                flash('Invalid upload: file already exists.', 'danger')
                 return redirect(url_for('upload'))
 
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            f.save(os.path.join(app.config['FILES_DIRECTORY'], filename))
 
             file_id = id_from_filename(filename)
             time_uploaded = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            size = os.stat(os.path.join(app.config['UPLOAD_FOLDER'], filename)).st_size
+            size = os.stat(os.path.join(app.config['FILES_DIRECTORY'], filename)).st_size
 
             conn = sqlite3.connect(app.config['DB_FILE'])
             cursor = conn.cursor()
@@ -157,7 +157,7 @@ def upload():
             log(current_user.get_id(), request.remote_addr, 'upload', f'file_id: {file_id}, ' +
                 f'filename: {filename}')
         else:
-            flash('Invalid upload.', 'danger')
+            flash('Invalid upload: file extension not allowed.', 'danger')
 
         if file_id is not None:
             # escape file_id
