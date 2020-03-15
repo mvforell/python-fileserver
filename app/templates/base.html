@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-100" lang="en"> {# h-100 needed for correct footer placement - see https://getbootstrap.com/docs/4.4/examples/sticky-footer-navbar/ #}
     <head>
         {% block title %}
             <title>{{ title }}</title>
@@ -13,16 +13,15 @@
         {% endblock %}
     </head>
 
-    <body>
-        {% block navbar %}
-            {{ nav.top.render(renderer='bootstrap') }}
+    <body class="d-flex flex-column h-100"> {# classes needed for correct footer placement #}
+        <header>
+            {% block navbar %}
+                {{ nav.top.render(renderer='bootstrap') }}
+            {% endblock %}
+        </header>
 
-            {# the following with-block was copied and modified from bootstrap/utils.html from flask-bootstrap, which is licensed as follows:
-                    Copyright 2019 Marc Brinkmann
-                    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-                    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-                    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-            #}
+        <main class="flex-shrink-0 mt-5" role="main"> {# flex-shrink-0 needed for correct footer placement #}
+            <div class="container my-4"></div> <!-- for padding -->
             {% with messages = get_flashed_messages(with_categories=True), transform = {
                 'critical': 'danger',
                 'error':    'danger',
@@ -33,28 +32,31 @@
                 'notset':   'info',
             } %}
                 {% if messages %} {# don't output anything if there are no messages #}
-                    <!-- begin message block -->
-                    <div class="container mt-3"></div> <!-- for padding -->
                     <div class="container-fluid flashed-messages">
-                      <div class="row">
-                        <div class="col-md-12">
-                            {% for cat, msg in messages %}
-                                <div class="alert alert-{{transform.get(cat.lower(), default_category or cat)}}" role="alert">
-                                    {{msg}}
-                                </div>
-                            {% endfor %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% for cat, msg in messages %}
+                                    <div class="alert alert-{{transform.get(cat.lower(), default_category or cat)}}" role="alert">
+                                        {{msg}}
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
-                      </div>
                     </div>
-                    <!-- end message block -->
-                {% endif -%}
-            {% endwith -%}
-        {% endblock %}
+                {% endif %}
+            {% endwith %}
 
-        <div class="container-fluid my-4">
-            {% block content %}
-            {% endblock %}
-        </div>
+            <div class="container-fluid">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+
+        <footer class="mt-auto py-3 bg-light">
+            <div class="container d-flex justify-content-center">
+                <span class="text-muted">Copyright © 2020 Max von Forell — Source code on <a href="https://github.com/mvforell/python-fileserver">GitHub</a></span>
+            </div>
+        </footer>
 
         {% block scripts %}
             <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

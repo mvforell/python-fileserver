@@ -64,7 +64,7 @@ class BootstrapRenderer(Renderer):
 
     # see https://getbootstrap.com/docs/4.4/components/navbar/
     def visit_Navbar(self, node):
-        cont = tags.nav(_class='navbar sticky-top navbar-expand-sm navbar-dark bg-secondary')
+        cont = tags.nav(_class='navbar fixed-top navbar-expand-sm navbar-dark bg-secondary')
 
         if current_user.is_authenticated:  # navbar is empty if not logged in, therefore no toggle button needed
             btn_toggle_kwargs = {
